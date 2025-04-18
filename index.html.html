@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Truck Assignment System</title>
+    <script>
+    const areas = {
+        'A': [100022,100192,100364,100495,100574,100997,101605,101617,101765,102985,103514,103589,103947,104085],
+        'B': [100258,100297,100388,100491,100956,101718,101725,101726,101745,101773,101906,101936,102100,102215,103345,103519,103678,103836,104054],
+        'C': [100096,100099,100452,100570,100575,101709,101720,101728,101730,101732,101734,101736,101737,101743,101747,101894,102231,102264,102309,102854,103932,104166,104174]
+    };
+
+    const trucks = {
+        'A': [{name:'TruckA8_1',capacity:8,trips:4},{name:'TruckB6_1',capacity:8,trips:4},{name:'TruckB6_2',capacity:7,trips:3}],
+        'B': [{name:'TruckB6_3',capacity:7,trips:3},{name:'TruckB6_4',capacity:7,trips:3},{name:'TruckB6_5',capacity:6,trips:3}],
+        'C': [{name:'TruckB6_6',capacity:6,trips:3},{name:'TruckB6_7',capacity:6,trips:2}]
+    };
+
+    function assignTruck(){
+        let customerId = parseInt(document.getElementById('customerId').value);
+        let orderVolume = parseInt(document.getElementById('orderVolume').value);
+        let areaFound = null;
+
+        for(let area in areas){
+            if(areas[area].includes(customerId)){
+                areaFound = area;
+                break;
+            }
+        }
+
+        if(areaFound === null){
+            document.getElementById('result').innerHTML = '<span style="color:red;">Invalid Customer ID</span>';
+            return;
+        }
+
+        let areaTrucks = trucks[areaFound];
+        let assignment = [];
+
+        for(let truck of areaTrucks){
+            let totalCapacity = truck.capacity * truck.trips;
+            if(orderVolume <= totalCapacity){
+                assignment.push(`Assigned <strong>${truck.name}</strong> with capacity ${truck.capacity} pallets per trip (${truck.trips} trips/day)`);
+                break;
+            }
+        }
+
+        if(assignment.length == 0){
+            assignment.push('<span style="color:red;">No single truck can handle this order alone, please split the order volume or review logistics!</span>');
+        }
+
+        document.getElementById('result').innerHTML = assignment.join('<br>');
+    }
+    </script>
+    <style>
+        body{font-family:Arial,sans-serif; margin:40px;}
+        input{padding:10px;margin:10px 0;width:100%;box-sizing:border-box;}
+        button{padding:10px 20px;cursor:pointer;background:#4CAF50;color:white;border:none;border-radius:4px;}
+        #result{margin-top:20px;padding:10px;border:1px solid #ccc;border-radius:4px;background:#f9f9f9;}
+    </style>
+</head>
+<body>
+    <h2>Truck Assignment System</h2>
+    <label for="customerId">Customer ID:</label>
+    <input type="number" id="customerId" placeholder="Enter Customer ID">
+
+    <label for="orderVolume">Order Volume (pallets):</label>
+    <input type="number" id="orderVolume" placeholder="Enter Order Volume">
+
+    <button onclick="assignTruck()">Assign Truck</button>
+
+    <div id="result"></div>
+</body>
+</html>
